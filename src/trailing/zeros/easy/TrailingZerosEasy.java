@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.Scanner;
 
 public class TrailingZerosEasy {
-    //TODO Need to complete
     public static void main(String[] args) {
 
         Scanner scanner = new Scanner(System.in);
