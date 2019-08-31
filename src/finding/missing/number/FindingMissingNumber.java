@@ -3,9 +3,7 @@ package finding.missing.number;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.nio.Buffer;
 import java.util.Arrays;
-import java.util.Collections;
 
 public class FindingMissingNumber {
     public static void main(String[] args) throws IOException {
@@ -18,26 +16,32 @@ public class FindingMissingNumber {
 
             arrInput = Arrays.stream(reader.readLine().split("\\s")).mapToInt(Integer::parseInt).toArray();
 
-            missingNumber[i] = findMissingNumber(arrInput);
+            missingNumber[i] = findMissingNumber(arrInput, arrLength);
         }
         Arrays.stream(missingNumber).forEach(System.out::println);
     }
 
-    private static int findMissingNumber(int[] arrInput) {
-        Arrays.sort(arrInput);
-        if (arrInput[0] != 1) {
-            return 1;
-
-        } else if (arrInput[arrInput.length - 1] != arrInput.length + 1) {
-            return arrInput.length + 1;
-
-        } else {
-            for (int i = 0; i < arrInput.length - 1; i++) {
-                if (arrInput[i + 1] - arrInput[i] > 1) {
-                    return arrInput[i] + 1;
-                }
-            }
+    private static int findMissingNumber(int[] arrInput, int arrLength) {
+        int res1 = 0;
+        for (int number : arrInput) {
+            res1 = res1 ^ number;
         }
-        return 0;
+        int res2 = 0;
+        for (int i = 1; i <= arrLength + 1; i++) {
+            res2 = res2 ^ i;
+        }
+        int missingNumber = res1 ^ res2;
+
+        return missingNumber;
+        /*int res1 = 0;
+        int num = 2;
+        for (int number : arrInput) {
+            res1 = res1 ^ number ^ num;
+            num++;
+        }
+
+        res1 = res1 == 0 ? 1 : res1;
+        return res1;*/
     }
+
 }

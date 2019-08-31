@@ -19,14 +19,15 @@ public class ComputeAPowerB {
         Arrays.stream(powerResult).forEach(System.out::println);
     }
 
+
     private static long findPower(int number, int power) {
         long x = number, ans = 1L;
-
-        for (int i = 0; i < Math.log(power); i++) {
-            if (checkBit(number, i)) {
-                ans = ans * x;
+        long M = (long) 1e9 + 7;
+        for (int i = 0; i < 31; i++) {
+            if (checkBit(power, i)) {
+                ans = ((ans % M) * (x % M)) % M;
             }
-            x = x * x;
+            x = ((x % M) * (x % M)) % M;
         }
         return ans;
     }
