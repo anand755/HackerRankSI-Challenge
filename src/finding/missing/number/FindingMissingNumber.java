@@ -33,15 +33,5 @@ public class FindingMissingNumber {
         int missingNumber = res1 ^ res2;
 
         return missingNumber;
-        /*int res1 = 0;
-        int num = 2;
-        for (int number : arrInput) {
-            res1 = res1 ^ number ^ num;
-            num++;
-        }
-
-        res1 = res1 == 0 ? 1 : res1;
-        return res1;*/
     }
-
 }
