@@ -57,14 +57,14 @@ public class LargestPalindromicSubstringHardAlter {
         return ans;
     }
 
-    private static int BS(String string, int N, int c1, int c2) {
+    private static int BS(String string, int stringLength, int c1, int c2) {
 
         int ans = 0;
-        int lo = 0, hi = Math.min(c1, N - c2 - 1);
+        int lo = 0, hi = Math.min(c1, stringLength - c2 - 1);
 
         while (lo <= hi) {
             int mid = (lo + hi) / 2;
-            if (isPalindrome(string, c1 - mid, c2 + mid)) {
+            if (isPalindrome(string, stringLength, c1 - mid, c2 + mid)) {
                 ans = mid;
                 lo = mid + 1;
             } else {
@@ -79,15 +79,15 @@ public class LargestPalindromicSubstringHardAlter {
         }
     }
 
-    private static boolean isPalindrome(String string, int p1, int p2) {
+    private static boolean isPalindrome(String string, int stringLength, int p1, int p2) {
 
         /*BigInteger fHash = forwardHashArr[p2] - forwardHashArr[p1] + (int) ((int) string.charAt(p1) * Math.pow(p, p1 + 1));
         BigInteger bHash = backwardHashArr[p1] - backwardHashArr[p2] + (int) ((int) string.charAt(p2) * Math.pow(p, string.length() - p2));*/
         BigInteger fHash = forwardHashArr[p2].subtract(forwardHashArr[p1]).add(BigInteger.valueOf((long) string.charAt(p1) * (long) Math.pow(p, p1 + 1)));
-        BigInteger bHash = backwardHashArr[p1].subtract(backwardHashArr[p2]).add(BigInteger.valueOf((long) string.charAt(p2) * (long) Math.pow(p, string.length() - p2)));
+        BigInteger bHash = backwardHashArr[p1].subtract(backwardHashArr[p2]).add(BigInteger.valueOf((long) string.charAt(p2) * (long) Math.pow(p, stringLength - p2)));
 
         int spfh = p1 + 1;//Smallest power of prime in forward hash
-        int spbh = string.length() - p2; //Smallest power of prime in backward hash
+        int spbh = stringLength - p2; //Smallest power of prime in backward hash
 
         int diff = Math.abs(spfh - spbh);
         if (spfh < spbh) {
