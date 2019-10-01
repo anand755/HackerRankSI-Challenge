@@ -1,37 +1,36 @@
 package largest.palindromic.substring;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 
 public class LargestPalindromicSubstring {
     public static void main(String[] args) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
         int testCaseCount = Integer.parseInt(reader.readLine());
         while (testCaseCount-- > 0) {
             int stringLength = Integer.parseInt(reader.readLine());
             String string = reader.readLine();
 
             int length = getLargestPalindromicLength(string, stringLength);
-            System.out.println(length);
+            writer.write(length + "\n");
+            writer.flush();
         }
-
     }
 
     private static int getLargestPalindromicLength(String string, int stringLength) {
-        int ans = 0;
+        int finalAns = 0;
         for (int i = 0; i < stringLength; i++) {
-            int currOddAns = BS(string, stringLength, i, i);
-            int currEvenAns = 0;
-            if (i < stringLength - 1) {
-                currEvenAns = BS(string, stringLength, i, i + 1);
+            int oddAns, evenAns = 1, currMaxAns;
+            oddAns = BS(string, stringLength, i, i);
+            //int currEvenAns = 0;
+            if ((i < stringLength - 1) && (string.charAt(i) == string.charAt(i + 1))) {
+                evenAns = BS(string, stringLength, i, i + 1);
             }
+            currMaxAns = Math.max(oddAns, evenAns);
+            finalAns = Math.max(finalAns, currMaxAns);
 
-            ans = Math.max(ans, currOddAns);
-            ans = Math.max(ans, currEvenAns);
         }
-
-        return ans;
+        return finalAns;
     }
 
     private static int BS(String string, int N, int c1, int c2) {
@@ -48,12 +47,7 @@ public class LargestPalindromicSubstring {
                 hi = mid - 1;
             }
         }
-
-        if ((c2 - c1 == 1) && (string.charAt(c1) != string.charAt(c2))) {
-            return 1;
-        } else {
-            return 2 * ans + 1 + (c2 - c1);
-        }
+        return 2 * ans + 1 + (c2 - c1);
     }
 
     private static boolean isPalindrome(String string, int p1, int p2) {
