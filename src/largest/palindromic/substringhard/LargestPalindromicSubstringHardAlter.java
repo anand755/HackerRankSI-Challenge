@@ -1,64 +1,71 @@
 package largest.palindromic.substringhard;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.math.BigInteger;
+import java.io.*;
 
 public class LargestPalindromicSubstringHardAlter {
-    private static BigInteger[] forwardHashArr;
-    private static BigInteger[] backwardHashArr;
-    private static int p;
+    //TODO (Preferred) : Most Optimized code TLE(TestCase#3) after 4.28 Sec
+    private static long[] powerArr;
+    private static long[] forwardHashArr;
+    private static long[] backwardHashArr;
+    private static int z = (int) 1e9 + 7;
 
     public static void main(String[] args) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
+
         int testCaseCount = Integer.parseInt(reader.readLine());
         while (testCaseCount-- > 0) {
             int stringLength = Integer.parseInt(reader.readLine());
-            String string = reader.readLine();
+            char[] string = reader.readLine().toCharArray();
+            computePowerAndHashArray(string, stringLength);
 
-            computeHashArray(string, stringLength);
             int length = getLargestPalindromicLength(string, stringLength);
-            System.out.println(length);
+            writer.write(length + "\n");
+            writer.flush();
         }
     }
 
-    private static void computeHashArray(String string, int stringLength) {
+    private static void computePowerAndHashArray(char[] string, int stringLength) {
+        int p = 3;
 
-        forwardHashArr = new BigInteger[stringLength];
-        backwardHashArr = new BigInteger[stringLength];
-        p = 3;
+        powerArr = new long[stringLength];
+        forwardHashArr = new long[stringLength];
+        backwardHashArr = new long[stringLength];
 
-        forwardHashArr[0] = BigInteger.valueOf((long) string.charAt(0) * (long) Math.pow(p, 1));
+        powerArr[0] = p;
+        forwardHashArr[0] = (string[0] * powerArr[0]) % z;
+        backwardHashArr[stringLength - 1] = (string[stringLength - 1] * powerArr[0]) % z;
+
         for (int i = 1; i < stringLength; i++) {
-            forwardHashArr[i] = forwardHashArr[i - 1].add(BigInteger.valueOf(((long) string.charAt(i) * (long) Math.pow(p, (i + 1)))));
+            powerArr[i] = (powerArr[i - 1] * p) % z;
+            forwardHashArr[i] = (forwardHashArr[i - 1] + (string[i] * powerArr[i]) % z) % z;
+            backwardHashArr[stringLength - 1 - i] = (backwardHashArr[stringLength - i] + (string[stringLength - 1 - i] * powerArr[i]) % z) % z;
         }
 
-        backwardHashArr[stringLength - 1] = BigInteger.valueOf((long) string.charAt(stringLength - 1) * (long) Math.pow(p, 1));
-        for (int i = stringLength - 2; i >= 0; i--) {
-            backwardHashArr[i] = backwardHashArr[i + 1].add(BigInteger.valueOf((long) string.charAt(i) * (long) Math.pow(p, (stringLength - i))));
-        }
     }
 
-    private static int getLargestPalindromicLength(String string, int stringLength) {
-        int ans = 0;
-        //Considering elements as center linearly and checking if it is palindrome or not using BS
 
-        for (int i = 0; i < stringLength; i++) {
-            int currOddAns = BS(string, stringLength, i, i);
-            int currEvenAns = 0;
-            if (i < stringLength - 1) {
-                currEvenAns = BS(string, stringLength, i, i + 1);
+    private static int getLargestPalindromicLength(char[] string, int stringLength) {
+
+        int finalAns = 0;
+        //Considering elements as center one by one and checking if it is palindrome or not using BS
+        int oddAns, evenAns;
+        int loopCount = stringLength - 1;
+
+        for (int i = 0; i < loopCount; i++) {
+
+            oddAns = BS(string, stringLength, i, i);
+            finalAns = Math.max(finalAns, oddAns);
+
+            if (string[i] == string[i + 1]) {
+                evenAns = BS(string, stringLength, i, i + 1);
+                finalAns = Math.max(finalAns, evenAns);
             }
-
-            ans = Math.max(ans, currOddAns);
-            ans = Math.max(ans, currEvenAns);
         }
-        return ans;
+        return finalAns;
     }
 
-    private static int BS(String string, int stringLength, int c1, int c2) {
-
+    private static int BS(char[] string, int stringLength, int c1, int c2) {
         int ans = 0;
         int lo = 0, hi = Math.min(c1, stringLength - c2 - 1);
 
@@ -71,32 +78,22 @@ public class LargestPalindromicSubstringHardAlter {
                 hi = mid - 1;
             }
         }
-
-        if ((c2 - c1 == 1) && (string.charAt(c1) != string.charAt(c2))) {
-            return 1;
-        } else {
-            return 2 * ans + 1 + (c2 - c1);
-        }
+        return 2 * ans + 1 + (c2 - c1);
     }
 
-    private static boolean isPalindrome(String string, int stringLength, int p1, int p2) {
+    private static boolean isPalindrome(char[] string, int stringLength, int p1, int p2) {
+        long forwardHashVal = (forwardHashArr[p2] - forwardHashArr[p1] + ((string[p1] * powerArr[p1]) % z) + z) % z;
+        long backwardHashVal = (backwardHashArr[p1] - backwardHashArr[p2] + ((string[p2] * powerArr[stringLength - 1 - p2]) % z) + z) % z;
 
-        /*BigInteger fHash = forwardHashArr[p2] - forwardHashArr[p1] + (int) ((int) string.charAt(p1) * Math.pow(p, p1 + 1));
-        BigInteger bHash = backwardHashArr[p1] - backwardHashArr[p2] + (int) ((int) string.charAt(p2) * Math.pow(p, string.length() - p2));*/
-        BigInteger fHash = forwardHashArr[p2].subtract(forwardHashArr[p1]).add(BigInteger.valueOf((long) string.charAt(p1) * (long) Math.pow(p, p1 + 1)));
-        BigInteger bHash = backwardHashArr[p1].subtract(backwardHashArr[p2]).add(BigInteger.valueOf((long) string.charAt(p2) * (long) Math.pow(p, stringLength - p2)));
+        int smallestPowerInForwardHash = p1 + 1;//Smallest power of prime in forward hash
+        int smallestPowerInBackwardHash = stringLength - p2; //Smallest power of prime in backward hash
+        int powerDiff = Math.abs(smallestPowerInForwardHash - smallestPowerInBackwardHash);
 
-        int spfh = p1 + 1;//Smallest power of prime in forward hash
-        int spbh = stringLength - p2; //Smallest power of prime in backward hash
-
-        int diff = Math.abs(spfh - spbh);
-        if (spfh < spbh) {
-            //fHash = (int) (fHash * Math.pow(p, diff));
-            fHash = fHash.multiply(BigInteger.valueOf((long) Math.pow(p, diff)));
-        } else {
-            //bHash = (int) (bHash * Math.pow(p, diff));
-            bHash = bHash.multiply(BigInteger.valueOf((long) Math.pow(p, diff)));
+        if (smallestPowerInForwardHash < smallestPowerInBackwardHash) {
+            forwardHashVal = (forwardHashVal * powerArr[powerDiff - 1]) % z;
+        } else if (smallestPowerInForwardHash > smallestPowerInBackwardHash) {
+            backwardHashVal = (backwardHashVal * powerArr[powerDiff - 1]) % z;
         }
-        return (fHash.equals(bHash));
+        return (forwardHashVal == backwardHashVal);
     }
 }

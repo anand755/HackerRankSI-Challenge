@@ -1,39 +1,46 @@
 package maximum.contiguous.subsequence;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.util.Arrays;
+import java.io.*;
+import java.util.*;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class MaximumContiguousSubsequence {
+
     public static void main(String[] args) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
+
         int testCaseCount = Integer.parseInt(reader.readLine());
+        Set<String> treeSet;
+
         while (testCaseCount-- > 0) {
-            int arrLength = Integer.parseInt(reader.readLine());
-            int[] arrayInput = Arrays.stream(reader.readLine().split("\\s")).mapToInt(Integer::parseInt).toArray();
-            Arrays.sort(arrayInput);
-            printMaxSubsequenceCount(arrayInput);
+            int inputLength = Integer.parseInt(reader.readLine());
+            treeSet = new TreeSet<>(Stream.of(reader.readLine().split("\\s")).collect(Collectors.toList()));
+            int ans = printMaxSubCountWithSet(treeSet);
+            writer.write(ans + "\n");
+            writer.flush();
         }
     }
 
-    private static void printMaxSubsequenceCount(int[] arrayInput) {
-        int maxSubsequenceCount = 1;
-        for (int i = 0; i < arrayInput.length - 1; i++) {
-            int currSubsCount = 1;
+    private static int printMaxSubCountWithSet(Set<String> treeSet) {
+        int[] arrayInput = treeSet.stream().mapToInt(Integer::valueOf).toArray();
+        Arrays.sort(arrayInput);
 
-            for (int j = i; j < arrayInput.length - 1; j++) {
-                if (arrayInput[j] + 1 == arrayInput[j + 1]) {
-                    currSubsCount++;
+        int maxCount = 1;
+        int length = arrayInput.length;
+        for (int i = 0; i < length; i++) {
+            int currCount = 1;
+            for (int j = i; j < length; j++) {
+
+                if ((j - i) == (arrayInput[j] - arrayInput[i])) {
+                    currCount = j - i + 1;
+                    maxCount = Math.max(maxCount, currCount);
                 } else {
                     break;
                 }
             }
-
-            if (currSubsCount > maxSubsequenceCount) {
-                maxSubsequenceCount = currSubsCount;
-            }
         }
-        System.out.println(maxSubsequenceCount);
+        return maxCount;
     }
 }
