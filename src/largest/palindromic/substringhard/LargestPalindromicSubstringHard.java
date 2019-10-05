@@ -3,7 +3,7 @@ package largest.palindromic.substringhard;
 import java.io.*;
 
 public class LargestPalindromicSubstringHard {
-    //TODO Here I am using char array instead of string to optimize time. TLE(TestCase#3) after 4.28, 4.3 Sec
+    //TODO Using Manacher’s Algorithm this works in O(N)
     private static long[] powerArr;
     private static long[] forwardHashArr;
     private static long[] backwardHashArr;
@@ -16,90 +16,62 @@ public class LargestPalindromicSubstringHard {
         int testCaseCount = Integer.parseInt(reader.readLine());
         while (testCaseCount-- > 0) {
             int stringLength = Integer.parseInt(reader.readLine());
-            computePowerArray(stringLength);
+            String string = reader.readLine();
 
-            char[] string = reader.readLine().toCharArray();
-            computeHashArray(string, stringLength);
-
-            int length = getLargestPalindromicLength(string, stringLength);
+            int length = manachersAlgorithm(string, stringLength);
             writer.write(length + "\n");
             writer.flush();
         }
     }
 
-    private static void computePowerArray(int stringLength) {
-        int p = 3;
+    private static int manachersAlgorithm(String s, int N) {
+        String str = getModifiedString(s, N);
+        int len = (2 * N) + 1;
+        int[] P = new int[len];
+        int c = 0; //stores the center of the longest palindromic substring until now
+        int r = 0; //stores the right boundary of the longest palindromic substring until now
+        int maxLen = 0;
+        for (int i = 0; i < len; i++) {
+            //get mirror index of i
+            int mirror = (2 * c) - i;
 
-        powerArr = new long[stringLength];
-        powerArr[0] = p;
-        for (int i = 1; i < stringLength; i++) {
-            powerArr[i] = (powerArr[i - 1] * p) % z;
-        }
-    }
+            //see if the mirror of i is expanding beyond the left boundary of current longest palindrome at center c
+            //if it is, then take r - i as P[i]
+            //else take P[mirror] as P[i]
+            if (i < r) {
+                P[i] = Math.min(r - i, P[mirror]);
+            }
 
-    private static void computeHashArray(char[] string, int stringLength) {
-        forwardHashArr = new long[stringLength];
-        backwardHashArr = new long[stringLength];
+            //expand at i
+            int a = i + (1 + P[i]);
+            int b = i - (1 + P[i]);
+            while (a < len && b >= 0 && str.charAt(a) == str.charAt(b)) {
+                P[i]++;
+                a++;
+                b--;
+            }
 
-        forwardHashArr[0] = (string[0] * powerArr[0]) % z;
-        backwardHashArr[stringLength - 1] = (string[stringLength - 1] * powerArr[0]) % z;
+            //check if the expanded palindrome at i is expanding beyond the right boundary of current longest palindrome at center c
+            //if it is, the new center is i
+            if (i + P[i] > r) {
+                c = i;
+                r = i + P[i];
 
-        for (int i = 1; i < stringLength; i++) {
-            forwardHashArr[i] = (forwardHashArr[i - 1] + (string[i] * powerArr[i]) % z) % z;
-            backwardHashArr[stringLength - 1 - i] = (backwardHashArr[stringLength - i] + (string[stringLength - 1 - i] * powerArr[i]) % z) % z;
-        }
-
-    }
-
-    private static int getLargestPalindromicLength(char[] string, int stringLength) {
-
-        int finalAns = 0;
-        //Considering elements as center one by one and checking if it is palindrome or not using BS
-        int oddAns, evenAns;
-        int loopCount = stringLength - 1;
-
-        for (int i = 0; i < loopCount; i++) {
-
-            oddAns = BS(string, stringLength, i, i);
-            finalAns = Math.max(finalAns, oddAns);
-
-            if (string[i] == string[i + 1]) {
-                evenAns = BS(string, stringLength, i, i + 1);
-                finalAns = Math.max(finalAns, evenAns);
+                if (P[i] > maxLen) { //update maxlen
+                    maxLen = P[i];
+                }
             }
         }
-        return finalAns;
+        return maxLen;
     }
 
-    private static int BS(char[] string, int stringLength, int c1, int c2) {
-        int ans = 0;
-        int lo = 0, hi = Math.min(c1, stringLength - c2 - 1);
-
-        while (lo <= hi) {
-            int mid = (lo + hi) / 2;
-            if (isPalindrome(string, stringLength, c1 - mid, c2 + mid)) {
-                ans = mid;
-                lo = mid + 1;
-            } else {
-                hi = mid - 1;
-            }
+    private static String getModifiedString(String s, int N) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < N; i++) {
+            sb.append("#");
+            sb.append(s.charAt(i));
         }
-        return 2 * ans + 1 + (c2 - c1);
-    }
-
-    private static boolean isPalindrome(char[] string, int stringLength, int p1, int p2) {
-        long forwardHashVal = (forwardHashArr[p2] - forwardHashArr[p1] + ((string[p1] * powerArr[p1]) % z) + z) % z;
-        long backwardHashVal = (backwardHashArr[p1] - backwardHashArr[p2] + ((string[p2] * powerArr[stringLength - 1 - p2]) % z) + z) % z;
-
-        int smallestPowerInForwardHash = p1 + 1;//Smallest power of prime in forward hash
-        int smallestPowerInBackwardHash = stringLength - p2; //Smallest power of prime in backward hash
-        int powerDiff = Math.abs(smallestPowerInForwardHash - smallestPowerInBackwardHash);
-
-        if (smallestPowerInForwardHash < smallestPowerInBackwardHash) {
-            forwardHashVal = (forwardHashVal * powerArr[powerDiff - 1]) % z;
-        } else if (smallestPowerInForwardHash > smallestPowerInBackwardHash) {
-            backwardHashVal = (backwardHashVal * powerArr[powerDiff - 1]) % z;
-        }
-        return (forwardHashVal == backwardHashVal);
+        sb.append("#");
+        return sb.toString();
     }
 }
