@@ -40,15 +40,15 @@ public class SubsequenceSumAlter {
                     sum += arrInput[j];
                 }
             }
-            tempArr1[i] = sum;
+            /*tempArr1[i] = sum;
             if ((sum >= minValue) && (sum <= maxValue)) {
                 count1++;
-            }
+            }*/
         }
-        System.out.print("TempArr1 : ");
+        /*System.out.print("TempArr1 : ");
         Arrays.stream(tempArr1).forEach(__ -> System.out.print(__ + " "));
         System.out.println();
-        System.out.println("count1 = " + count1);
+        System.out.println("count1 = " + count1);*/
 
         int count2 = 0;
         int lHalf = arrLength - fHalf;
@@ -63,16 +63,18 @@ public class SubsequenceSumAlter {
                 }
             }
             tempArr2[i] = sum;
-            if ((sum >= minValue) && (sum <= maxValue)) {
+            /*if ((sum >= minValue) && (sum <= maxValue)) {
                 count2++;
-            }
+            }*/
         }
 
 
-        System.out.print("TempArr2 : ");
+        /*System.out.print("TempArr2 : ");
         Arrays.stream(tempArr2).forEach(__ -> System.out.print(__ + " "));
         System.out.println();
-        System.out.println("count2 = " + count2);
+        System.out.println("count2 = " + count2);*/
+
+
 
         int count3 = 0;
         for (int i = 0; i < firstLoopCount; i++) {
@@ -96,5 +98,49 @@ public class SubsequenceSumAlter {
 
     private static boolean CB(int num, int pos) {
         return ((num & (1 << pos)) == (1 << pos));
+    }
+
+    private static int findFloor(int[] arrInput, int startIndex, int number) {
+        //startIndex inclusive
+
+        int lo = startIndex, hi = arrInput.length - 1;
+        int floorIndex = 0;
+
+        while (lo <= hi) {
+            int mid = (lo + hi) / 2;
+
+            if (arrInput[mid] == number) {
+                floorIndex = mid;
+                break;
+            } else if (arrInput[mid] < number) {
+                lo = mid + 1;
+                floorIndex = mid;
+            } else {
+                hi = mid - 1;
+            }
+
+        }
+        return floorIndex;
+    }
+
+    private static int findCeil(int[] arrInput, int startIndex, int number) {
+        //startIndex inclusive
+
+        int lo = startIndex, hi = arrInput.length - 1;
+        int ceilIndex = arrInput.length - 1;
+
+        while (lo <= hi) {
+            int mid = (lo + hi) / 2;
+            if (arrInput[mid] == number) {
+                ceilIndex = mid;
+                break;
+            } else if (arrInput[mid] > number) {
+                hi = mid - 1;
+                ceilIndex = mid;
+            } else {
+                lo = mid + 1;
+            }
+        }
+        return ceilIndex;
     }
 }
