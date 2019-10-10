@@ -5,6 +5,7 @@ import java.util.*;
 
 public class CountTheTrianglesAlter {
 
+    //This is My solution which was giving wrong solution
 
     public static void main(String[] args) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
