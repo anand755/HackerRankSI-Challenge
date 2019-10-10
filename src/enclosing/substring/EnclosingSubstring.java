@@ -62,6 +62,9 @@ public class EnclosingSubstring {
     private static boolean isValid(char[] text, Map<Character, Integer> patternFreqMap, int leftPointer, int rightPointer) {
         Map<Character, Integer> patternMap = new HashMap<>(patternFreqMap);
 
+
+
+
         for (int i = leftPointer; i <= rightPointer; i++) {
             char currChar = text[i];
             if (patternMap.containsKey(currChar)) {
