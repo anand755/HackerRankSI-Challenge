@@ -3,7 +3,7 @@ package killing.dragons;
 import java.io.*;
 import java.util.Arrays;
 
-public class KillingDragons {
+public class KillingDragonsAlter {
     public static void main(String[] args) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
@@ -16,49 +16,46 @@ public class KillingDragons {
 
             int startingDungeon = getStartingDungeon(dragonPowerArr, energyPowerArr, dungeonsCount);
             writer.write(startingDungeon + "\n");
-            writer.flush();
+            //writer.flush();
         }
-        //writer.flush();
+        writer.flush();
     }
 
-    private static int getStartingDungeon(int[] dragonPowerArr, int[] energyPowerArr, int dungeonsCount) {
+    private static int getStartingDungeon(int[] dragonPowerArr, int[] energyPowerArr, int totalDungeonsCount) {
 
-        for (int i = 0; i < dungeonsCount; i++) {
-            int p, q, power;
-            p = q = i;
+
+        for (int i = 0; i < totalDungeonsCount; i++) {
+            int power;
             power = 0;
-            boolean flag = true;
+            boolean isAllDragonKilled = true;
 
-            //Here I am traversing from index to last
-            for (int j = i; j < dungeonsCount; j++) {
-                power += energyPowerArr[q];
-                if (power >= dragonPowerArr[p]) {
-                    power -= dragonPowerArr[p];
-                    p++;
-                    q++;
-                    //continue;
+            //Here I am traversing from index i to last
+
+            for (int j = i; j < totalDungeonsCount; j++) {
+                power += energyPowerArr[j];
+                if (power >= dragonPowerArr[j]) {
+                    power -= dragonPowerArr[j];
+
                 } else {
-                    flag = false;
+                    isAllDragonKilled = false;
                     break;
                 }
             }
 
             //Here I am traversing from 0 to i index as prince can start from any index in starting
-            if (flag) {
-                p = q = 0;
+            if (isAllDragonKilled) {
                 for (int k = 0; k < i; k++) {
-                    power += energyPowerArr[q];
-                    if (power >= dragonPowerArr[p]) {
-                        power -= dragonPowerArr[p];
-                        p++;
-                        q++;
+                    power += energyPowerArr[k];
+                    if (power >= dragonPowerArr[k]) {
+                        power -= dragonPowerArr[k];
+
                     } else {
-                        flag = false;
+                        isAllDragonKilled = false;
                         break;
                     }
                 }
             }
-            if (flag) {
+            if (isAllDragonKilled) {
                 return (i + 1);
             }
         }
