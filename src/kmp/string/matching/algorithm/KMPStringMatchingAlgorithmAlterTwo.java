@@ -62,6 +62,11 @@ public class KMPStringMatchingAlgorithmAlterTwo {
                 if (j != 0) {
                     j = lps[j - 1];
                 } else {
+
+                    while (patternArr[lps[j-1]]!=patternArr[i]){
+
+                    }
+
                     lps[i] = 0;
                     i++;
                 }
