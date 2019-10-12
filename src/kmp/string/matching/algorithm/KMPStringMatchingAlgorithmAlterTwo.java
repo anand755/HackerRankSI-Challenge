@@ -24,12 +24,13 @@ public class KMPStringMatchingAlgorithmAlterTwo {
         int count = 0;
         int[] lpsArr = computeLpsArray(patternArr);
 
+        if (textArr.length < patternArr.length) {
+            return 0;
+        }
         int i = 0, j = 0;
 
         while (i < textArr.length && j < patternArr.length) {
             if (textArr[i] == patternArr[j]) {
-                //System.out.println("Same at i = " + i + " and j = " + j);
-
                 i++;
                 j++;
                 if (j == patternArr.length) {
@@ -49,30 +50,20 @@ public class KMPStringMatchingAlgorithmAlterTwo {
         return count;
     }
 
-    private static int[] computeLpsArray(char[] patternArr) {
-        int[] lps = new int[patternArr.length];
+
+    private static int[] computeLpsArray(char[] s) {
+
+        int[] p = new int[s.length];
         int j = 0;
+        p[0] = 0;
+        for (int i = 1; i < s.length; i++) {
+            while (j > 0 && s[j] != s[i])
+                j = p[j - 1];
 
-        for (int i = 0; i < patternArr.length; ) {
-            if (patternArr[i] == patternArr[j]) {
-                lps[i] = j + 1;
-                i++;
+            if (s[j] == s[i])
                 j++;
-            } else {
-                if (j != 0) {
-                    j = lps[j - 1];
-                } else {
-
-                    while (patternArr[lps[j-1]]!=patternArr[i]){
-
-                    }
-
-                    lps[i] = 0;
-                    i++;
-                }
-            }
+            p[i] = j;
         }
-
-        return lps;
+        return p;
     }
 }

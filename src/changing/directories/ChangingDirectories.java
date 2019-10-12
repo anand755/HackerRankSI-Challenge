@@ -18,11 +18,11 @@ public class ChangingDirectories {
                 String result = executeCommand(directoryStack, commandStr);
 
                 writer.write(result);
-                //writer.flush();
+                writer.flush();
             }
             writer.write("\n");
         }
-        writer.flush();
+        //writer.flush();
     }
 
     private static String executeCommand(Stack<String> directoryStack, String commandStr) {

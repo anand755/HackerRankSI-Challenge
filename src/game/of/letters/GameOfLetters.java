@@ -1,8 +1,6 @@
 package game.of.letters;
 
 import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
 
 public class GameOfLetters {
     public static void main(String[] args) throws IOException {
@@ -14,21 +12,32 @@ public class GameOfLetters {
         while (testCaseCount-- > 0) {
             String inputString = reader.readLine().trim();
             String winnerName = getWinnerName(inputString);
-            writer.write(winnerName);
+            writer.write(winnerName + "\n");
             writer.flush();
         }
         //writer.flush();
     }
 
     private static String getWinnerName(String inputString) {
-        Map<Character, Integer> charMap = new HashMap<>();
+
+        String winnerName;
+
+        int xorVal = 0;
+        int[] charCount = new int[26];
 
         for (char ch : inputString.toCharArray()) {
-            int freq = charMap.getOrDefault(ch, 0);
-            charMap.put(ch, freq + 1);
+            charCount[ch-(int)'a']++;
         }
 
+        for (int count : charCount) {
+            xorVal = xorVal ^ count;
+        }
 
-        return null;
+        if (xorVal == 0) {
+            winnerName = "Banta";
+        } else {
+            winnerName = "Santa";
+        }
+        return winnerName;
     }
 }
