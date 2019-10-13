@@ -1,7 +1,10 @@
 package killing.dragons;
 
 import java.io.*;
+import java.util.ArrayDeque;
 import java.util.Arrays;
+import java.util.Deque;
+import java.util.Queue;
 
 public class KillingDragons {
     public static void main(String[] args) throws IOException {
@@ -21,47 +24,52 @@ public class KillingDragons {
         //writer.flush();
     }
 
-    private static int getStartingDungeon(int[] dragonPowerArr, int[] energyPowerArr, int dungeonsCount) {
+    private static int getStartingDungeon(int[] dragonPowerArr, int[] humanPowerArr, int dungeonsCount) {
+
+        int totalDragonPower = Arrays.stream(dragonPowerArr).sum();
+        int totalHumanPower = Arrays.stream(humanPowerArr).sum();
+        if (totalHumanPower < totalDragonPower) {
+            return -1;
+        }
+
+
+        Deque<Integer> dunQue = new ArrayDeque<Integer>();
+
 
         for (int i = 0; i < dungeonsCount; i++) {
-            int p, q, power;
-            p = q = i;
-            power = 0;
-            boolean flag = true;
+            dunQue.addLast(i);
+        }
+        while (dunQue.peekFirst() != dungeonsCount - 1) {
+            while (humanPowerArr[dunQue.peekFirst()] < dragonPowerArr[dunQue.peekFirst()]) {
+                dunQue.pollFirst();
+            }
+            int dragonPower = 0;
+            int humanPower = 0;
 
-            //Here I am traversing from index to last
-            for (int j = i; j < dungeonsCount; j++) {
-                power += energyPowerArr[q];
-                if (power >= dragonPowerArr[p]) {
-                    power -= dragonPowerArr[p];
-                    p++;
-                    q++;
-                    //continue;
-                } else {
-                    flag = false;
+            int startPos = dunQue.peekFirst();
+
+            boolean isFound = true;
+
+            for (int i = startPos; i < dungeonsCount; i++) {
+                dragonPower += dragonPowerArr[i];
+                humanPower += humanPowerArr[i];
+
+                if (humanPower < dragonPower) {
+                    isFound = false;
+                    for (int j = i; j >= startPos; j--) {
+                        dunQue.pollFirst();
+                    }
+
                     break;
                 }
-            }
 
-            //Here I am traversing from 0 to i index as prince can start from any index in starting
-            if (flag) {
-                p = q = 0;
-                for (int k = 0; k < i; k++) {
-                    power += energyPowerArr[q];
-                    if (power >= dragonPowerArr[p]) {
-                        power -= dragonPowerArr[p];
-                        p++;
-                        q++;
-                    } else {
-                        flag = false;
-                        break;
-                    }
-                }
             }
-            if (flag) {
-                return (i + 1);
+            if (isFound) {
+                break;
             }
         }
-        return -1;
+
+        return (dunQue.peekFirst() + 1);
     }
+
 }
