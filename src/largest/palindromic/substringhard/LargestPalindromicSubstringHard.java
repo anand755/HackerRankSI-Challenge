@@ -3,7 +3,7 @@ package largest.palindromic.substringhard;
 import java.io.*;
 
 public class LargestPalindromicSubstringHard {
-    //TODO Using Manacher’s Algorithm this works in O(N)
+    //This is using Manacher’s Algorithm this works in O(N)
     private static long[] powerArr;
     private static long[] forwardHashArr;
     private static long[] backwardHashArr;

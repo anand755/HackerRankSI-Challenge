@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Scanner;
 
 public class OverlappingRectangles {
-    //TODO Need to complete
+
     public static void main(String[] args) {
         String topRect = "", bottomRect = "";
         Scanner scanner = new Scanner(System.in);
@@ -74,13 +74,13 @@ public class OverlappingRectangles {
 
                 if ((a1 > x1) && (a2 < x2) && (b2 > y2)) {
 
-                    //TODO HERE SPCL1
+
                     isHorizonOverlapped = isVertiOverlapped = true;
 
                     overlappedWidthX = a2 - a1;
                     overlappedHeightY = y2 - y1;
                 } else if ((a1 > x1) && (a2 < x2) && (y1 == b1) && (y2 == b2)) {
-                    //TODO HERE SPCL2
+
                     isHorizonOverlapped = isVertiOverlapped = true;
 
                     overlappedWidthX = a2 - a1;

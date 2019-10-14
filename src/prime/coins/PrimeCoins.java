@@ -2,11 +2,10 @@ package prime.coins;
 
 import java.io.*;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 public class PrimeCoins {
+    //TODO: Unable to figure it out. Making xor of possible movements doesn't match with Sample Output0
     public static void main(String[] args) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
@@ -16,6 +15,7 @@ public class PrimeCoins {
         while (testCaseCount-- > 0) {
             int inputPileSize = Integer.parseInt(reader.readLine());
             String winnerName = getWinnerName(inputPileSize);
+
             writer.write(winnerName + "\n");
             writer.flush();
         }
@@ -25,26 +25,13 @@ public class PrimeCoins {
     private static String getWinnerName(int inputPileSize) {
 
         String winnerName = "";
-        Set<Integer> moveSet = new HashSet<>();
+        List<Integer> primeList = getPrimeList(inputPileSize);
 
-        //As 1 is always a possible move
-        moveSet.add(1);
-
-        for (int i = 2; i <= Math.sqrt(inputPileSize); i++) {
-
-            //Collecting prime number count;
-            if (inputPileSize % i == 0) {
-
-                moveSet.add(i);
-                moveSet.add(inputPileSize / i);
-
-            }
+        int xorVal = 1;
+        for (int movement : primeList) {
+            xorVal ^= movement;
         }
 
-        int xorVal = 0;
-        for (int val : moveSet) {
-            xorVal = xorVal ^ val;
-        }
 
         if (xorVal == 0) {
             winnerName = "Banta";
@@ -55,6 +42,30 @@ public class PrimeCoins {
         return winnerName;
     }
 
+    private static List<Integer> getPrimeList(int range) {
+        List<Integer> prList = new ArrayList<>();
+
+        for (int i = 2; i <= range; i++) {
+            prList.add(i);
+        }
 
 
+        for (int num = 2; num <= Math.sqrt(range); num++) {
+            int currNum = num;
+
+            if (prList.contains(currNum)) {
+                //remove from prime set
+                int mul = 2;
+
+                while (currNum * mul <= range) {
+
+                    prList.remove(new Integer(currNum * mul));
+                    //prList.remove(currNum * mul);
+                    mul++;
+                }
+            }
+
+        }
+        return prList;
+    }
 }

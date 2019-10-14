@@ -24,8 +24,7 @@ public class StockSpan {
         writer.flush();
     }
 
-    private static int[] getStockSpan(int[] arrInput, int arrLength) throws IOException {
-        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
+    private static int[] getStockSpan(int[] arrInput, int arrLength) {
 
         int[] countArr = new int[arrLength];
 

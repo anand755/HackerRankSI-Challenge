@@ -5,7 +5,6 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class ExpressAsAPowerB {
-    //TODO GETTING WA
     public static void main(String[] args) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
