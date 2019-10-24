@@ -1,19 +1,18 @@
 package prime.fear;
 
 import java.io.*;
-import java.util.*;
+import java.util.Arrays;
 
 public class PrimeFear {
     private static boolean[] primeArr = new boolean[(int) 1e6 + 1];
-
-    private static List<Integer> primeFearList = new ArrayList<>();
+    private static int[] primeFearCountArr = new int[(int) 1e6 + 1];
 
 
     public static void main(String[] args) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
 
-        preparePrimeArray();
+        preparePrimeFearArray();
 
         int testCaseCount = Integer.parseInt(reader.readLine());
         while (testCaseCount-- > 0) {
@@ -30,40 +29,34 @@ public class PrimeFear {
 
     private static int getPrimeFearCount(int maxValue) {
 
-        int count = 0;
-
-        for (int number : primeFearList) {
-            if (number <= maxValue) {
-                count++;
-            } else {
-                break;
-            }
-        }
-
+        //This is O(1) solution
+        int count = primeFearCountArr[maxValue];
         return count;
     }
 
-    private static void preparePrimeArray() {
+    private static void preparePrimeFearArray() {
         int maxVal = (int) 1e6;
-        //pre populate with true
-        for (int i = 0; i <= maxVal; i++) {
-            primeArr[i] = true;
-        }
+        //pre populating the array with true
 
+        Arrays.fill(primeArr, true);
+
+
+        //As 0 and 1 is not prime
         primeArr[0] = false;
         primeArr[1] = false;
 
-
         for (int i = 2; i <= (int) 1e3; i++) {
             if (primeArr[i]) {
-                for (int j = i * 2; j <= (maxVal / i) + 1; j += i) {
+                for (int j = i * 2; j <= maxVal; j += i) {
                     primeArr[j] = false;
                 }
             }
         }
 
+        //checking if the number is fear prime then adding the count to primeFearCountArr array such that
+        // primeFearCountArr[i] contains prime fear count till i
 
-        //filtering only for prime fear number
+        int count = 0;
 
         for (int i = 0; i <= maxVal; i++) {
             if (primeArr[i]) {
@@ -80,12 +73,15 @@ public class PrimeFear {
                         }
                         div *= 10;
                     }
-
                 }
                 if (primeArr[i]) {
-                    primeFearList.add(i);
+                    //incrementing the count only if it fear prime
+                    count++;
                 }
             }
+
+            //This count array stores number of total fear primes till i
+            primeFearCountArr[i] = count;
         }
     }
 }
