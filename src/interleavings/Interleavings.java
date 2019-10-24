@@ -18,9 +18,8 @@ public class Interleavings {
                 word1 = word2;
                 word2 = temp;
             }
-            writer.write("Case #" + caseNo + ":");
+            writer.write("Case #" + caseNo + ":\n");
             printAllInterLeaving(word1, word2, "", writer);
-            writer.write("\n");
             writer.flush();
         }
         writer.flush();
