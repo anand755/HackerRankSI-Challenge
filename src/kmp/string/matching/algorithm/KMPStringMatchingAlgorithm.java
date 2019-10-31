@@ -1,46 +1,69 @@
 package kmp.string.matching.algorithm;
 
+import java.io.*;
+
 public class KMPStringMatchingAlgorithm {
-    public static void main(String[] args) {
-        int ans = search("aaab", "aaaaabaaaaaab");
-        System.out.println(ans);
+    public static void main(String[] args) throws IOException {
+        BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
+        BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
+
+        int testCaseCount = Integer.parseInt(reader.readLine());
+        while (testCaseCount-- > 0) {
+            String[] AB = reader.readLine().split("\\s");
+            String pattern = AB[0].trim();
+            String text = AB[1].trim();
+            int patternCount = getPatternCount(text.toCharArray(), pattern.toCharArray());
+            writer.write(patternCount + "\n");
+            writer.flush();
+        }
+        //writer.flush();
     }
 
-    private static int search(String pattern, String text) {
-        int count = 0;
-        int[] lsp = computeLspTable(pattern);
+    private static int getPatternCount(char[] textArr, char[] patternArr) {
 
-        int j = 0;  // Number of chars matched in pattern
-        for (int i = 0; i < text.length(); i++) {
-            while (j > 0 && text.charAt(i) != pattern.charAt(j)) {
-                // Fall back in the pattern
-                j = lsp[j - 1];  // Strictly decreasing
-            }
-            if (text.charAt(i) == pattern.charAt(j)) {
-                // Next char matched, increment position
+        int count = 0;
+        int[] lpsArr = computeLpsArray(patternArr);
+
+        if (textArr.length < patternArr.length) {
+            return 0;
+        }
+        int i = 0, j = 0;
+
+        while (i < textArr.length && j < patternArr.length) {
+            if (textArr[i] == patternArr[j]) {
+                i++;
                 j++;
-                if (j == pattern.length())
+                if (j == patternArr.length) {
                     count++;
-                    //return i - (j - 1);
+                    j = lpsArr[j - 1];
+                }
+
+            } else {
+                if (j != 0) {
+                    j = lpsArr[j - 1];
+                } else {
+                    i++;
+                }
             }
         }
 
         return count;
-        //return -1;  // Not found
     }
 
-    private static int[] computeLspTable(String pattern) {
-        int[] lsp = new int[pattern.length()];
-        lsp[0] = 0;  // Base case
-        for (int i = 1; i < pattern.length(); i++) {
-            // Start by assuming we're extending the previous LSP
-            int j = lsp[i - 1];
-            while (j > 0 && pattern.charAt(i) != pattern.charAt(j))
-                j = lsp[j - 1];
-            if (pattern.charAt(i) == pattern.charAt(j))
+
+    private static int[] computeLpsArray(char[] s) {
+
+        int[] p = new int[s.length];
+        int j = 0;
+        p[0] = 0;
+        for (int i = 1; i < s.length; i++) {
+            while (j > 0 && s[j] != s[i])
+                j = p[j - 1];
+
+            if (s[j] == s[i])
                 j++;
-            lsp[i] = j;
+            p[i] = j;
         }
-        return lsp;
+        return p;
     }
 }
