@@ -13,11 +13,11 @@ public class Interleavings {
             String[] words = reader.readLine().split("\\s");
             String word1 = words[0];
             String word2 = words[1];
-            if (word1.charAt(0) > word2.charAt(0)) {
+            /*if (word1.charAt(0) > word2.charAt(0)) {
                 String temp = word1;
                 word1 = word2;
                 word2 = temp;
-            }
+            }*/
             writer.write("Case #" + caseNo + ":\n");
             printAllInterLeaving(word1, word2, "", writer);
             writer.flush();
@@ -30,13 +30,16 @@ public class Interleavings {
 
         if (word1.length() == 0 && word2.length() == 0) {
             writer.write(interLeaved + "\n");
+            return;
         }
 
         if (word1.length() != 0) {
             printAllInterLeaving(word1.substring(1), word2, interLeaved + word1.charAt(0), writer);
+            //printAllInterLeaving(word2, word1.substring(1), interLeaved + word1.charAt(0), writer);
         }
         if (word2.length() != 0) {
-            printAllInterLeaving(word1, word2.substring(1), interLeaved + word2.charAt(0), writer);
+            //printAllInterLeaving(word1, word2.substring(1), interLeaved + word2.charAt(0), writer);
+            printAllInterLeaving(word2.substring(1), word1, interLeaved + word2.charAt(0), writer);
         }
     }
 }
