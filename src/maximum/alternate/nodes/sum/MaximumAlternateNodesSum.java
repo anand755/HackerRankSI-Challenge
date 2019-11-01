@@ -54,32 +54,41 @@ public class MaximumAlternateNodesSum {
 
         //taking all the combination and filtering out the max value
 
-        int includeVal_1 = leftValPacket.excludeVal + rightValPacket.excludeVal;
-        int includeVal_2 = leftValPacket.excludeVal + root.data;
-        int includeVal_3 = rightValPacket.excludeVal + root.data;
-        int includeVal_4 = leftValPacket.excludeVal + rightValPacket.excludeVal + root.data;
+        int[] includeArr = new int[3];
+        includeArr[0] = leftValPacket.excludeVal;
+        includeArr[1] = rightValPacket.excludeVal;
+        includeArr[2] = root.data;
 
-        int includeVal = Math.max(Math.max(includeVal_1, includeVal_2), Math.max(includeVal_3, includeVal_4));
+        int includeVal = getPossibleMaxValue(includeArr);
 
 
-        int excludeVal_1 = leftValPacket.includeVal;
-        int excludeVal_2 = rightValPacket.includeVal;
-        int excludeVal_3 = leftValPacket.includeVal + rightValPacket.includeVal;
 
-        int temp_excludeVal_123 = Math.max(Math.max(excludeVal_1, excludeVal_2), excludeVal_3);
-
+        int[] excludeArr = new int[2];
+        excludeArr[0] = leftValPacket.includeVal;
+        excludeArr[1] = rightValPacket.includeVal;
+        int excludeArr_temp = getPossibleMaxValue(excludeArr);
 
         int excludeVal_4 = leftValPacket.includeVal + rightValPacket.excludeVal;
         int excludeVal_5 = leftValPacket.excludeVal + rightValPacket.includeVal;
-
         int temp_excludeVal_45 = Math.max(excludeVal_4, excludeVal_5);
 
-        int excludeVal = Math.max(temp_excludeVal_123, temp_excludeVal_45);
+        int excludeVal = Math.max(excludeArr_temp, temp_excludeVal_45);
 
 
         return new ValPacket(includeVal, excludeVal);
 
 
+    }
+
+    private static int getPossibleMaxValue(int[] arrInput) {
+        int maxSum = 0;
+
+        for (int num : arrInput) {
+            if (num > 0) {
+                maxSum += num;
+            }
+        }
+        return maxSum;
     }
 
 
