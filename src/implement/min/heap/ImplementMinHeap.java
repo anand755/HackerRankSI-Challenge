@@ -5,104 +5,92 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ImplementMinHeap {
+    private static List<Integer> list = new ArrayList<>();
+
     public static void main(String[] args) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
 
         int operationCount = Integer.parseInt(reader.readLine());
 
+        list.add(null);
 
-        MinHeap minHeap = new MinHeap();
         while (operationCount-- > 0) {
             String operation = reader.readLine().trim();
-            String outPut = performOperation(operation, minHeap);
+            String outPut = performOperation(operation);
             writer.write(outPut + "");
             writer.flush();
         }
-        writer.flush();
+        //writer.flush();
     }
 
-    private static String performOperation(String operation, MinHeap minHeap) {
-
+    private static String performOperation(String operation) {
 
         if (operation.contains("insert")) {
 
             int data = Integer.parseInt(operation.split("\\s")[1].trim());
-            minHeap.insert(data);
-
+            insertIntoMinHeap(data);
 
         } else if (operation.contains("getMin")) {
-
-            return minHeap.getMin() + "\n";
+            return getMinFromHeap() + "\n";
 
         } else if (operation.contains("delMin")) {
-            minHeap.delete();
-
+            deleteFromHeap();
         }
-
 
         return "";
     }
 
+    private static void insertIntoMinHeap(int data) {
+        list.add(data);
+        int index = list.size() - 1;
 
-    private static class MinHeap {
-        private List<Integer> list;
+        while (index != 1 && list.get(index) < list.get(index / 2)) {
 
-        private MinHeap() {
-            this.list = new ArrayList<>();
-            this.list.add(null);
+            //swap
+            int tempVal = list.get(index);
+            list.set(index, list.get(index / 2));
+            list.set(index / 2, tempVal);
+
+            index = index / 2;
+        }
+    }
+
+    private static String getMinFromHeap() {
+        if (list.size() == 1) {
+            return "Empty";
+        } else {
+            return list.get(1) + "";
+        }
+    }
+
+    private static void deleteFromHeap() {
+        if (list.size() == 1) {
+            return;
         }
 
-        private void insert(int data) {
-            list.add(data);
-            int index = list.size() - 1;
+        int lastIndex = list.size() - 1;
 
-            while (index != 1 && list.get(index) < list.get(index / 2)) {
+        list.set(1, list.get(lastIndex));
+        list.remove(lastIndex);
+
+        int index = 1;
+        while (2 * index + 1 < list.size()) {
+
+            int childMinVal = Math.min(list.get(2 * index), list.get(2 * index + 1));
+            if (childMinVal < list.get(index)) {
 
                 //swap
-                int tempVal = list.get(index);
-                list.set(index, list.get(index / 2));
-                list.set(index / 2, tempVal);
+                int childMinValIndex = list.get(2 * index) < list.get(2 * index + 1) ? 2 * index : 2 * index + 1;
 
-                index = index / 2;
-            }
+                int tempVal = list.get(childMinValIndex);
+                list.set(childMinValIndex, list.get(index));
+                list.set(index, tempVal);
 
-        }
+                index = childMinValIndex;
 
-        private String getMin() {
-            if (list.size() == 1) {
-                return "Empty";
             } else {
-                return list.get(1) + "";
-            }
-
-        }
-
-        private void delete() {
-            int lastIndex = list.size() - 1;
-
-            list.set(1, list.get(lastIndex));
-            list.remove(lastIndex);
-
-            int index = 1;
-            while (2 * index + 1 < list.size()) {
-
-                int childMinVal = Math.min(list.get(2 * index), list.get(2 * index + 1));
-                if (childMinVal < list.get(index)) {
-
-                    //swap
-                    int childMinValIndex = list.get(2 * index) < list.get(2 * index + 1) ? 2 * index : 2 * index + 1;
-
-                    int tempVal = list.get(childMinValIndex);
-                    list.set(childMinValIndex, list.get(index));
-                    list.set(index, tempVal);
-
-                    index = childMinValIndex;
-
-                } else {
-                    break;
-                }
-
+                break;
             }
         }
     }
