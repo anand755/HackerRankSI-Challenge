@@ -34,8 +34,8 @@ public class MaximumAlternateNodesSum {
 
     private static ValPacket getMaxVal(Node root) {
 
-        //Assumption: Any given node should return 2 things. 1-> value including that node along with child node
-        //2 -> value excluding that node but with child node
+        //Assumption: Any given node should return 2 things. 1-> max value of bottom sub tree including that node
+        //2 -> max value of bottom sub tree excluding that node
 
         //Main Logic: For a given node
         // includeVal = Max of all the combination for left and right child nodes exclude val + current data
@@ -62,7 +62,6 @@ public class MaximumAlternateNodesSum {
         int includeVal = getPossibleMaxValue(includeArr);
 
 
-
         int[] excludeArr = new int[2];
         excludeArr[0] = leftValPacket.includeVal;
         excludeArr[1] = rightValPacket.includeVal;
@@ -70,9 +69,11 @@ public class MaximumAlternateNodesSum {
 
         int excludeVal_4 = leftValPacket.includeVal + rightValPacket.excludeVal;
         int excludeVal_5 = leftValPacket.excludeVal + rightValPacket.includeVal;
-        int temp_excludeVal_45 = Math.max(excludeVal_4, excludeVal_5);
+        int excludeVal_6 = leftValPacket.excludeVal + rightValPacket.excludeVal;
 
-        int excludeVal = Math.max(excludeArr_temp, temp_excludeVal_45);
+        int temp_excludeVal_456 = Math.max(Math.max(excludeVal_4, excludeVal_5),excludeVal_6);
+
+        int excludeVal = Math.max(excludeArr_temp, temp_excludeVal_456);
 
 
         return new ValPacket(includeVal, excludeVal);
