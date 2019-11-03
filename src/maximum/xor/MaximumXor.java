@@ -18,7 +18,7 @@ public class MaximumXor {
             writer.write(maxXor + "\n");
             writer.flush();
         }
-        writer.flush();
+        //writer.flush();
 
     }
 
@@ -49,14 +49,18 @@ public class MaximumXor {
     }
 
     private static int getNumberForMaxXor(Node root, int val, int maxSetBit) {
+        //This method return the number from trie(root) with which if I do xor of val . it will be maximum.
+        //Keep in mind that 10000 > 01111 (Even though only MSB bit is set.. that number is bigger )
+        //If the bit is set in val.. then we will look for 0 in the trie so that xor becomes max.
         int ans = 0;
         for (int i = maxSetBit; i >= 0; i--) {
             int bit = ((val >> i) & 1);
             if (root.c[1 - bit] != null) {
-                root = root.c[bit];
-                ans = ans + 1 << i;
+                root = root.c[1 - bit];
+                ans = ans + ((1 - bit) << i);
             } else {
                 root = root.c[bit];
+                ans = ans + (bit << i);
             }
         }
         return ans;
