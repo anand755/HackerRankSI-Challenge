@@ -75,13 +75,29 @@ public class ImplementMinHeap {
         list.remove(lastIndex);
 
         int index = 1;
-        while (2 * index + 1 < list.size()) {
+        while (2 * index < list.size()) {
 
-            int childMinVal = Math.min(list.get(2 * index), list.get(2 * index + 1));
+            int leftChildVal = list.get(2 * index);
+            int childMinVal = leftChildVal;
+
+            boolean isRightChildExist = false;
+            if ((2 * index) + 1 < list.size()) {
+
+                isRightChildExist = true;
+
+                int rightChildVal = list.get(2 * index + 1);
+                childMinVal = Math.min(leftChildVal, rightChildVal);
+            }
+
+
+            //int childMinVal = Math.min(list.get(2 * index), list.get(2 * index + 1));
             if (childMinVal < list.get(index)) {
 
                 //swap
-                int childMinValIndex = list.get(2 * index) < list.get(2 * index + 1) ? 2 * index : 2 * index + 1;
+                //int childMinValIndex = list.get(2 * index) < list.get(2 * index + 1) ? 2 * index : 2 * index + 1;
+                int childMinValIndex = isRightChildExist && (list.get(2 * index + 1) < list.get(2 * index)) ?
+                        2 * index + 1 : 2 * index;
+
 
                 int tempVal = list.get(childMinValIndex);
                 list.set(childMinValIndex, list.get(index));

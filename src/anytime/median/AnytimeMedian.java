@@ -41,15 +41,17 @@ public class AnytimeMedian {
                 biggerHalfMinHeap.add(arrInput[i]);
             }
 
-            //do balance for the size of both heap
-            if (biggerHalfMinHeap.size() > smallHalfMaxHeap.size()) {
+            //do balance to maintain the the size of both heap as half
+            if (biggerHalfMinHeap.size() - smallHalfMaxHeap.size() > 0) {
                 int shiftedVal = biggerHalfMinHeap.poll();
                 smallHalfMaxHeap.add(shiftedVal);
+            } else if (smallHalfMaxHeap.size() - biggerHalfMinHeap.size() > 1) {
+                int shiftedVal = smallHalfMaxHeap.poll();
+                biggerHalfMinHeap.add(shiftedVal);
             }
 
             medianArr[i] = smallHalfMaxHeap.peek();
         }
-
 
         return medianArr;
     }
