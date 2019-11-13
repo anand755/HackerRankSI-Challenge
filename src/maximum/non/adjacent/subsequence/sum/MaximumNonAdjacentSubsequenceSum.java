@@ -20,26 +20,26 @@ public class MaximumNonAdjacentSubsequenceSum {
     }
 
     private static int getMaxNonAdjacentSubseqSum(int[] arrInput, int N) {
-        int[] dpTable = new int[N + 1];
-
-        if (N < 2) {
-            return Math.max(arrInput[0],0);
-        }
+        int[] dpTable = new int[N];
 
 
         dpTable[0] = arrInput[0];
-        dpTable[1] = arrInput[1];
+
+        if (N == 1) {
+            return arrInput[0];
+        }
+        dpTable[1] = Math.max(arrInput[0], arrInput[1]);
+
+        int ans = Math.max(arrInput[0], arrInput[1]);
 
         for (int i = 2; i <= N - 1; i++) {
-            int val = Math.max(dpTable[i - 1], dpTable[i - 2] + arrInput[i]);
-            val = Math.max(val, arrInput[i]);
-            dpTable[i] = val;
+
+            int currMaxVal = Math.max(dpTable[i - 2] + arrInput[i], Math.max(arrInput[i], dpTable[i - 1]));
+
+            dpTable[i] = currMaxVal;
+            ans = Math.max(ans, currMaxVal);
         }
 
-        int ans = Integer.MIN_VALUE;
-        for (int value : dpTable) {
-            ans = Math.max(ans, value);
-        }
         return ans;
     }
 }
