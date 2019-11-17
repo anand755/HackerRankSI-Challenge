@@ -4,6 +4,8 @@ import java.io.*;
 import java.util.Arrays;
 
 public class NumberOfIslandsEasy {
+    //This is DFS approach. This is code is completely okay But its giving RTE only because of deep
+    //recursive call. Java online compiler might not always support that.
     public static void main(String[] args) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
         BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(System.out));
