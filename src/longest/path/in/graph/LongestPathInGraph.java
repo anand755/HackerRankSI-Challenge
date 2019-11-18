@@ -45,50 +45,46 @@ public class LongestPathInGraph {
 
         //We can consider any node between [1,N]
         int startNode = 1;
-
         int edgeVertex = 0;
 
         boolean[] visited = new boolean[N + 1];
-        Arrays.fill(visited, false);
 
-        Queue<Integer> queue = new LinkedList<>();
+        LinkedList<Integer> queue = new LinkedList<>();
 
         queue.add(startNode);
-        queue.add(-1);
+        visited[startNode] = true;
 
-        while (queue.size() > 1) {
-
+        while (!queue.isEmpty()) {
             int u = queue.poll();
 
-            if (u == -1) {
-                queue.add(-1);
-            } else {
-                for (int v : graph.get(u)) {
-                    if (!visited[v]) {
-                        queue.add(v);
-                        visited[v] = true;
-                        edgeVertex = v;
-                    }
+            for (int v : graph.get(u)) {
+                if (!visited[v]) {
+                    queue.add(v);
+                    visited[v]=true;
+                    edgeVertex = v;
                 }
             }
         }
+
 
         //Doing BFS from one of the edgeVertex
 
-
-        queue = new LinkedList<>();
+        queue.clear();
         Arrays.fill(visited, false);
 
         int length = 0;
+
         queue.add(edgeVertex);
         queue.add(-1);
+        visited[edgeVertex] = true;
 
         while (queue.size() > 1) {
             int u = queue.poll();
 
             if (u == -1) {
-                length++;
                 queue.add(-1);
+                length++;
+
             } else {
                 for (int v : graph.get(u)) {
                     if (!visited[v]) {
@@ -98,7 +94,6 @@ public class LongestPathInGraph {
                 }
             }
         }
-
 
         return length;
     }
