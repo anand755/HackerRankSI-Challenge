@@ -1,11 +1,11 @@
 package rotting.oranges;
 
 import java.io.*;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 
 public class RottingOranges {
-    private static int maxDays = 0;
 
     public static void main(String[] args) throws IOException {
         BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
@@ -13,7 +13,6 @@ public class RottingOranges {
 
         int testCaseCount = Integer.parseInt(reader.readLine());
         while (testCaseCount-- > 0) {
-            maxDays = 0;
             int matSize = Integer.parseInt(reader.readLine());
             int[][] matrix = new int[matSize][matSize];
             for (int i = 0; i < matSize; i++) {
@@ -26,38 +25,25 @@ public class RottingOranges {
         //writer.flush();
     }
 
-    private static int getMinDaysToRot(int[][] matrix, int matSize) {
-        boolean[][] visited = new boolean[matSize][matSize];
-
-
-        for (int i = 0; i < matSize; i++) {
-            for (int j = 0; j < matSize; j++) {
-                if (matrix[i][j] == 2 && isValid(matrix, matSize, i, j)) {
-
-                    BFS(matrix, visited, i, j, matSize);
-                }
-            }
-        }
-
-        int output = maxDays;
-
-        for (int i = 0; i < matSize; i++) {
-            for (int j = 0; j < matSize; j++) {
-                if (matrix[i][j] == 1) {
-                    output = -1;
-                }
-            }
-        }
-
-        return output;
-    }
-
-    private static void BFS(int[][] matrix, boolean[][] visited, int i, int j, int N) {
-        int currDays = 0;
+    private static int getMinDaysToRot(int[][] matrix, int N) {
+        boolean[][] visited = new boolean[N][N];
         LinkedList<Position> queue = new LinkedList<>();
-        queue.add(new Position(i, j));
+        int days = 0;
+
+        //Adding all the rotting oranges position into the queue initially and also checking if any
+        //fresh orange is surrounding or not
+        //Then doing the BFS and marking all the fresh oranges to rotten
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                if (matrix[i][j] == 2 && isValid(matrix, N, i, j)) {
+                    queue.add(new Position(i, j));
+                    visited[i][j] = true;
+                }
+            }
+        }
+
         queue.add(null);
-        visited[i][j] = true;
+
 
         while (!queue.isEmpty()) {
             Position u = queue.poll();
@@ -66,8 +52,7 @@ public class RottingOranges {
             if (u == null) {
                 if (queue.size() > 0) {
                     queue.add(null);
-                    currDays++;
-                    maxDays = Math.max(currDays, maxDays);
+                    days++;
                 }
 
             } else {
@@ -93,6 +78,19 @@ public class RottingOranges {
                 }
             }
         }
+
+
+        int output = days;
+
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                if (matrix[i][j] == 1) {
+                    output = -1;
+                }
+            }
+        }
+
+        return output;
     }
 
     private static boolean isValidIndex(int i, int j, int N, boolean[][] visited, int[][] matrix) {
