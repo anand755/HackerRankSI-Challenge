@@ -36,37 +36,50 @@ public class Forest {
             String isForest = isForest(graph, N);
             writer.write(isForest + "\n");
 
-            //writer.flush();
+            writer.flush();
 
         }
-        writer.flush();
+        //writer.flush();
 
     }
 
     private static String isForest(ArrayList<ArrayList<Integer>> graph, int N) {
 
-        int treeCount = 0;
+        String isForest = "Yes";
         boolean[] visited = new boolean[N + 1];
         Arrays.fill(visited, false);
 
         for (int i = 1; i <= N; i++) {
             if (!visited[i]) {
-                treeCount++;
-                DFS(graph, i, visited);
+                if (isCycle(graph, i, visited, -1)) {
+                    //Contains cycle hence not a forest
+                    isForest = "No";
+                    break;
+                }
             }
         }
 
-        String isForest = treeCount > 1 ? "Yes" : "No";
         return isForest;
     }
 
-    private static void DFS(ArrayList<ArrayList<Integer>> graph, int S, boolean[] visited) {
-
+    private static boolean isCycle(ArrayList<ArrayList<Integer>> graph, int S, boolean[] visited, int parent) {
         visited[S] = true;
+
         for (int v : graph.get(S)) {
-            if (!visited[v]) {
-                DFS(graph, v, visited);
+
+            if (v != parent) {
+                if (visited[v]) {
+                    return true;
+                } else {
+                    if (isCycle(graph, v, visited, S)) {
+                        return true;
+                    }
+
+                }
             }
         }
+        return false;
+
     }
+
 }
